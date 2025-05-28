@@ -80,17 +80,8 @@ class PickerPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     _center = Offset(size.width / 2, size.height / 2);
-    _radius =
-        min(size.width / 2, size.height / 2) -
+    _radius = min(size.width / 2, size.height / 2) -
         pickerDecorator.sweepDecoration.pickerStrokeWidth;
-
-    pickerDecorator.sweepDecoration.paint(
-      canvas,
-      size,
-      center,
-      startAngle,
-      sweepAngle,
-    );
 
     if ((disableTimeStartAngle?.isNotEmpty ?? false) &&
         (disableTimeEndAngle?.isNotEmpty ?? false) &&
@@ -105,6 +96,14 @@ class PickerPainter extends CustomPainter {
         );
       }
     }
+
+    pickerDecorator.sweepDecoration.paint(
+      canvas,
+      size,
+      center,
+      startAngle,
+      sweepAngle,
+    );
 
     if (drawInitHandlerOnTop) {
       _drawEndHandler(canvas);
@@ -124,7 +123,7 @@ class PickerPainter extends CustomPainter {
   ) {
     TimePickerSweepDecoration disableSweepDecorator = TimePickerSweepDecoration(
       pickerStrokeWidth: pickerDecorator.sweepDecoration.pickerStrokeWidth,
-      pickerColor: disabledRangeColor ?? Colors.grey.shade600,
+      pickerColor: pickerDecorator.sweepDecoration.disabledConnectorColor,
       connectorColor: pickerDecorator.sweepDecoration.disabledConnectorColor,
       connectorStrokeWidth:
           pickerDecorator.sweepDecoration.connectorStrokeWidth,
