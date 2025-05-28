@@ -136,6 +136,7 @@ class TimePickerSweepDecoration {
     bool? showConnector,
     double? connectorStrokeWidth,
     Color? connectorColor,
+    Color? disabledConnectorColor,
   }) {
     return TimePickerSweepDecoration(
       pickerStrokeWidth: pickerStrokeWidth ?? this.pickerStrokeWidth,
@@ -144,6 +145,8 @@ class TimePickerSweepDecoration {
       showConnector: showConnector ?? this.showConnector,
       connectorStrokeWidth: connectorStrokeWidth ?? this.connectorStrokeWidth,
       connectorColor: connectorColor ?? this.connectorColor,
+      disabledConnectorColor:
+          disabledConnectorColor ?? this.disabledConnectorColor,
     );
   }
 
