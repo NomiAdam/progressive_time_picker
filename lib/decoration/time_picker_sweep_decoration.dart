@@ -57,14 +57,14 @@ class TimePickerSweepDecoration {
     this.showConnector = false,
     this.connectorStrokeWidth,
     this.connectorColor,
-  })  : assert(
-          (pickerGradient == null && pickerColor == null) ? false : true,
-          'either a color or gradient must be provided too allow sweep drawing',
-        ),
-        assert(
-          (pickerGradient != null && pickerColor != null) ? false : true,
-          'color is not needed when a gradient is defined',
-        );
+  }) : assert(
+         (pickerGradient == null && pickerColor == null) ? false : true,
+         'either a color or gradient must be provided too allow sweep drawing',
+       ),
+       assert(
+         (pickerGradient != null && pickerColor != null) ? false : true,
+         'color is not needed when a gradient is defined',
+       );
 
   paint(
     Canvas canvas,
@@ -89,10 +89,15 @@ class TimePickerSweepDecoration {
     );
 
     if (showConnector) {
-      var timeProgressConnectorBrush = Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = connectorStrokeWidth ?? 1
-        ..color = connectorColor ?? Colors.black;
+      var timeProgressConnectorBrush =
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = connectorStrokeWidth ?? 1
+            ..color = connectorColor ?? Colors.black;
+
+      if (useRoundedPickerCap) {
+        timeProgressConnectorBrush..strokeCap = StrokeCap.round;
+      }
 
       canvas.drawArc(
         sweepRect,
@@ -105,10 +110,11 @@ class TimePickerSweepDecoration {
   }
 
   Paint _getPaint({double? width, PaintingStyle? style, Rect? rect}) {
-    var paint = Paint()
-      ..strokeCap = useRoundedPickerCap ? StrokeCap.round : StrokeCap.butt
-      ..style = style ?? PaintingStyle.stroke
-      ..strokeWidth = width ?? pickerStrokeWidth;
+    var paint =
+        Paint()
+          ..strokeCap = useRoundedPickerCap ? StrokeCap.round : StrokeCap.butt
+          ..style = style ?? PaintingStyle.stroke
+          ..strokeWidth = width ?? pickerStrokeWidth;
 
     if (pickerColor != null) paint..color = pickerColor!;
 
