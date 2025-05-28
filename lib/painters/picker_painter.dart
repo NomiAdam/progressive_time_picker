@@ -125,12 +125,11 @@ class PickerPainter extends CustomPainter {
     TimePickerSweepDecoration disableSweepDecorator = TimePickerSweepDecoration(
       pickerStrokeWidth: pickerDecorator.sweepDecoration.pickerStrokeWidth,
       pickerColor: disabledRangeColor ?? Colors.grey.shade600,
-      connectorColor:
-          disabledRangeColor ?? pickerDecorator.sweepDecoration.connectorColor,
+      connectorColor: pickerDecorator.sweepDecoration.disabledConnectorColor,
       connectorStrokeWidth:
           pickerDecorator.sweepDecoration.connectorStrokeWidth,
       pickerGradient: pickerDecorator.sweepDecoration.pickerGradient,
-      useRoundedPickerCap: false,
+      useRoundedPickerCap: true,
       showConnector: pickerDecorator.sweepDecoration.showConnector,
     );
     disableSweepDecorator.paint(canvas, size, center, startAngle, sweepAngle);

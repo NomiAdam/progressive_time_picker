@@ -48,6 +48,10 @@ class TimePickerSweepDecoration {
   /// optional color
   final Color? connectorColor;
 
+  /// define the disabled connector line color
+  /// optional color
+  final Color? disabledConnectorColor;
+
   /// Creates a TimePickerSweepDecoration.
   TimePickerSweepDecoration({
     required this.pickerStrokeWidth,
@@ -57,6 +61,7 @@ class TimePickerSweepDecoration {
     this.showConnector = false,
     this.connectorStrokeWidth,
     this.connectorColor,
+    this.disabledConnectorColor,
   }) : assert(
          (pickerGradient == null && pickerColor == null) ? false : true,
          'either a color or gradient must be provided too allow sweep drawing',
