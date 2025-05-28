@@ -130,7 +130,6 @@ class PickerPainter extends CustomPainter {
       connectorStrokeWidth:
           pickerDecorator.sweepDecoration.connectorStrokeWidth,
       pickerGradient: pickerDecorator.sweepDecoration.pickerGradient,
-      showConnector: false,
       useRoundedPickerCap: false,
       showConnector: pickerDecorator.sweepDecoration.showConnector,
     );
