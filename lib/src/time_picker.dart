@@ -81,10 +81,11 @@ class TimePicker extends StatefulWidget {
   final bool drawInitHandlerOnTop;
 
   @override
-  _TimePickerState createState() => _TimePickerState();
+  TimePickerState createState() => TimePickerState();
 
   /// Creates a TimePicker.
   TimePicker({
+    super.key,
     required this.initTime,
     required this.endTime,
     required this.onSelectionChange,
@@ -107,7 +108,7 @@ class TimePicker extends StatefulWidget {
   });
 }
 
-class _TimePickerState extends State<TimePicker> {
+class TimePickerState extends State<TimePicker> {
   int _init = 0;
   int _end = 0;
 
@@ -121,20 +122,24 @@ class _TimePickerState extends State<TimePicker> {
 
   @override
   void initState() {
-    super.initState();
     _calculatePickerData();
+    super.initState();
   }
 
   /// we need to update this widget when the parent widget changes
   @override
   void didUpdateWidget(TimePicker oldWidget) {
-    super.didUpdateWidget(oldWidget);
     if (oldWidget.initTime != widget.initTime ||
         oldWidget.endTime != widget.endTime ||
         oldWidget.days != widget.days ||
         oldWidget.disabledRanges != widget.disabledRanges) {
       _calculatePickerData();
     }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void repaint() {
+    _calculatePickerData();
   }
 
   void _calculatePickerData() {
@@ -142,19 +147,19 @@ class _TimePickerState extends State<TimePicker> {
       pickedTime: widget.initTime,
       clockTimeFormat:
           widget.decoration?.clockNumberDecoration?.clockTimeFormat ??
-          ClockTimeFormat.twentyFourHours,
+              ClockTimeFormat.twentyFourHours,
       clockIncrementTimeFormat:
           widget.decoration?.clockNumberDecoration?.clockIncrementTimeFormat ??
-          ClockIncrementTimeFormat.fiveMin,
+              ClockIncrementTimeFormat.fiveMin,
     );
     _end = pickedTimeToDivision(
       pickedTime: widget.endTime,
       clockTimeFormat:
           widget.decoration?.clockNumberDecoration?.clockTimeFormat ??
-          ClockTimeFormat.twentyFourHours,
+              ClockTimeFormat.twentyFourHours,
       clockIncrementTimeFormat:
           widget.decoration?.clockNumberDecoration?.clockIncrementTimeFormat ??
-          ClockIncrementTimeFormat.fiveMin,
+              ClockIncrementTimeFormat.fiveMin,
     );
 
     _disabledInit = [];
@@ -167,11 +172,8 @@ class _TimePickerState extends State<TimePicker> {
             pickedTime: disabledRange.initTime,
             clockTimeFormat:
                 widget.decoration?.clockNumberDecoration?.clockTimeFormat ??
-                ClockTimeFormat.twentyFourHours,
-            clockIncrementTimeFormat:
-                widget
-                    .decoration
-                    ?.clockNumberDecoration
+                    ClockTimeFormat.twentyFourHours,
+            clockIncrementTimeFormat: widget.decoration?.clockNumberDecoration
                     ?.clockIncrementTimeFormat ??
                 ClockIncrementTimeFormat.fiveMin,
           ),
@@ -181,11 +183,8 @@ class _TimePickerState extends State<TimePicker> {
             pickedTime: disabledRange.endTime,
             clockTimeFormat:
                 widget.decoration?.clockNumberDecoration?.clockTimeFormat ??
-                ClockTimeFormat.twentyFourHours,
-            clockIncrementTimeFormat:
-                widget
-                    .decoration
-                    ?.clockNumberDecoration
+                    ClockTimeFormat.twentyFourHours,
+            clockIncrementTimeFormat: widget.decoration?.clockNumberDecoration
                     ?.clockIncrementTimeFormat ??
                 ClockIncrementTimeFormat.fiveMin,
           ),
@@ -193,6 +192,9 @@ class _TimePickerState extends State<TimePicker> {
       }
 
       error = validateRange(widget.initTime, widget.endTime);
+      widget.onInitialError(error ?? false);
+    } else {
+      error = true;
       widget.onInitialError(error ?? false);
     }
   }
@@ -261,6 +263,7 @@ class _TimePickerState extends State<TimePicker> {
       child: TimePickerPainter(
         init: _init,
         end: _end,
+        error: error,
         disableTimeStart: _disabledInit,
         disableTimeEnd: _disabledEnd,
         disabledRangeColor: widget.disabledRangesColor,
@@ -271,19 +274,13 @@ class _TimePickerState extends State<TimePicker> {
         onSelectionChange: (newInit, newEnd, isDisableRange) {
           PickedTime inTime = formatTime(
             time: newInit,
-            incrementTimeFormat:
-                widget
-                    .decoration
-                    ?.clockNumberDecoration
+            incrementTimeFormat: widget.decoration?.clockNumberDecoration
                     ?.clockIncrementTimeFormat ??
                 ClockIncrementTimeFormat.fiveMin,
           );
           PickedTime outTime = formatTime(
             time: newEnd,
-            incrementTimeFormat:
-                widget
-                    .decoration
-                    ?.clockNumberDecoration
+            incrementTimeFormat: widget.decoration?.clockNumberDecoration
                     ?.clockIncrementTimeFormat ??
                 ClockIncrementTimeFormat.fiveMin,
           );
@@ -306,19 +303,13 @@ class _TimePickerState extends State<TimePicker> {
         onSelectionEnd: (newInit, newEnd, isDisableRange) {
           var inTime = formatTime(
             time: newInit,
-            incrementTimeFormat:
-                widget
-                    .decoration
-                    ?.clockNumberDecoration
+            incrementTimeFormat: widget.decoration?.clockNumberDecoration
                     ?.clockIncrementTimeFormat ??
                 ClockIncrementTimeFormat.fiveMin,
           );
           var outTime = formatTime(
             time: newEnd,
-            incrementTimeFormat:
-                widget
-                    .decoration
-                    ?.clockNumberDecoration
+            incrementTimeFormat: widget.decoration?.clockNumberDecoration
                     ?.clockIncrementTimeFormat ??
                 ClockIncrementTimeFormat.fiveMin,
           );
