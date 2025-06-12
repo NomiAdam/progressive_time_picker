@@ -61,6 +61,7 @@ class TimePickerPainter extends StatefulWidget {
 
   /// Creates a TimePickerPainter.
   TimePickerPainter({
+    super.key,
     required this.init,
     required this.end,
     this.disableTimeStart,
@@ -81,10 +82,10 @@ class TimePickerPainter extends StatefulWidget {
   });
 
   @override
-  _TimePickerPainterState createState() => _TimePickerPainterState();
+  TimePickerPainterState createState() => TimePickerPainterState();
 }
 
-class _TimePickerPainterState extends State<TimePickerPainter> {
+class TimePickerPainterState extends State<TimePickerPainter> {
   bool _isInitHandlerSelected = false;
   bool _isEndHandlerSelected = false;
 
@@ -129,6 +130,12 @@ class _TimePickerPainterState extends State<TimePickerPainter> {
   void initState() {
     _calculatePaintData();
     super.initState();
+  }
+
+  void repaint() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _calculatePaintData();
+    });
   }
 
   /// we need to update this widget both with gesture detector but

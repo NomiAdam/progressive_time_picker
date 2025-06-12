@@ -109,6 +109,8 @@ class TimePicker extends StatefulWidget {
 }
 
 class TimePickerState extends State<TimePicker> {
+  final painterKey = GlobalKey<TimePickerPainterState>();
+
   int _init = 0;
   int _end = 0;
 
@@ -129,17 +131,18 @@ class TimePickerState extends State<TimePicker> {
   /// we need to update this widget when the parent widget changes
   @override
   void didUpdateWidget(TimePicker oldWidget) {
+    super.didUpdateWidget(oldWidget);
     if (oldWidget.initTime != widget.initTime ||
         oldWidget.endTime != widget.endTime ||
         oldWidget.days != widget.days ||
         oldWidget.disabledRanges != widget.disabledRanges) {
       _calculatePickerData();
     }
-    super.didUpdateWidget(oldWidget);
   }
 
   void repaint() {
     _calculatePickerData();
+    painterKey.currentState?.repaint();
   }
 
   void _calculatePickerData() {
@@ -193,9 +196,11 @@ class TimePickerState extends State<TimePicker> {
 
       error = validateRange(widget.initTime, widget.endTime);
       widget.onInitialError(error ?? false);
+      setState(() {});
     } else {
       error = true;
       widget.onInitialError(error ?? false);
+      setState(() {});
     }
   }
 
@@ -264,6 +269,7 @@ class TimePickerState extends State<TimePicker> {
         init: _init,
         end: _end,
         error: error,
+        key: painterKey,
         disableTimeStart: _disabledInit,
         disableTimeEnd: _disabledEnd,
         disabledRangeColor: widget.disabledRangesColor,
