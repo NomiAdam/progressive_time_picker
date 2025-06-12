@@ -46,6 +46,9 @@ class TimePicker extends StatefulWidget {
   /// callback function when init and end finish
   final SelectionChanged<PickedTime> onSelectionEnd;
 
+  /// callback function on init when error ranges
+  final Function(bool) onInitialError;
+
   /// used to decorate the our widget
   final TimePickerDecoration? decoration;
 
@@ -84,6 +87,7 @@ class TimePicker extends StatefulWidget {
     required this.endTime,
     required this.onSelectionChange,
     required this.onSelectionEnd,
+    required this.onInitialError,
     this.child,
     this.decoration,
     this.height,
@@ -134,19 +138,19 @@ class _TimePickerState extends State<TimePicker> {
       pickedTime: widget.initTime,
       clockTimeFormat:
           widget.decoration?.clockNumberDecoration?.clockTimeFormat ??
-              ClockTimeFormat.twentyFourHours,
+          ClockTimeFormat.twentyFourHours,
       clockIncrementTimeFormat:
           widget.decoration?.clockNumberDecoration?.clockIncrementTimeFormat ??
-              ClockIncrementTimeFormat.fiveMin,
+          ClockIncrementTimeFormat.fiveMin,
     );
     _end = pickedTimeToDivision(
       pickedTime: widget.endTime,
       clockTimeFormat:
           widget.decoration?.clockNumberDecoration?.clockTimeFormat ??
-              ClockTimeFormat.twentyFourHours,
+          ClockTimeFormat.twentyFourHours,
       clockIncrementTimeFormat:
           widget.decoration?.clockNumberDecoration?.clockIncrementTimeFormat ??
-              ClockIncrementTimeFormat.fiveMin,
+          ClockIncrementTimeFormat.fiveMin,
     );
 
     _disabledInit = [];
@@ -159,8 +163,11 @@ class _TimePickerState extends State<TimePicker> {
             pickedTime: disabledRange.initTime,
             clockTimeFormat:
                 widget.decoration?.clockNumberDecoration?.clockTimeFormat ??
-                    ClockTimeFormat.twentyFourHours,
-            clockIncrementTimeFormat: widget.decoration?.clockNumberDecoration
+                ClockTimeFormat.twentyFourHours,
+            clockIncrementTimeFormat:
+                widget
+                    .decoration
+                    ?.clockNumberDecoration
                     ?.clockIncrementTimeFormat ??
                 ClockIncrementTimeFormat.fiveMin,
           ),
@@ -170,8 +177,11 @@ class _TimePickerState extends State<TimePicker> {
             pickedTime: disabledRange.endTime,
             clockTimeFormat:
                 widget.decoration?.clockNumberDecoration?.clockTimeFormat ??
-                    ClockTimeFormat.twentyFourHours,
-            clockIncrementTimeFormat: widget.decoration?.clockNumberDecoration
+                ClockTimeFormat.twentyFourHours,
+            clockIncrementTimeFormat:
+                widget
+                    .decoration
+                    ?.clockNumberDecoration
                     ?.clockIncrementTimeFormat ??
                 ClockIncrementTimeFormat.fiveMin,
           ),
@@ -179,6 +189,7 @@ class _TimePickerState extends State<TimePicker> {
       }
 
       error = validateRange(widget.initTime, widget.endTime);
+      widget.onInitialError(error ?? false);
     }
   }
 
@@ -256,13 +267,19 @@ class _TimePickerState extends State<TimePicker> {
         onSelectionChange: (newInit, newEnd, isDisableRange) {
           PickedTime inTime = formatTime(
             time: newInit,
-            incrementTimeFormat: widget.decoration?.clockNumberDecoration
+            incrementTimeFormat:
+                widget
+                    .decoration
+                    ?.clockNumberDecoration
                     ?.clockIncrementTimeFormat ??
                 ClockIncrementTimeFormat.fiveMin,
           );
           PickedTime outTime = formatTime(
             time: newEnd,
-            incrementTimeFormat: widget.decoration?.clockNumberDecoration
+            incrementTimeFormat:
+                widget
+                    .decoration
+                    ?.clockNumberDecoration
                     ?.clockIncrementTimeFormat ??
                 ClockIncrementTimeFormat.fiveMin,
           );
@@ -285,13 +302,19 @@ class _TimePickerState extends State<TimePicker> {
         onSelectionEnd: (newInit, newEnd, isDisableRange) {
           var inTime = formatTime(
             time: newInit,
-            incrementTimeFormat: widget.decoration?.clockNumberDecoration
+            incrementTimeFormat:
+                widget
+                    .decoration
+                    ?.clockNumberDecoration
                     ?.clockIncrementTimeFormat ??
                 ClockIncrementTimeFormat.fiveMin,
           );
           var outTime = formatTime(
             time: newEnd,
-            incrementTimeFormat: widget.decoration?.clockNumberDecoration
+            incrementTimeFormat:
+                widget
+                    .decoration
+                    ?.clockNumberDecoration
                     ?.clockIncrementTimeFormat ??
                 ClockIncrementTimeFormat.fiveMin,
           );
@@ -344,14 +367,22 @@ class _TimePickerState extends State<TimePicker> {
         if (disabledStart > disabledEnd) {
           // Overlaps with any part of the circular disabled range
           if (_rangesOverlap(0, disabledEnd, 0, totalMinutesInDay - 1) ||
-              _rangesOverlap(disabledStart, totalMinutesInDay - 1, 0,
-                  totalMinutesInDay - 1)) {
+              _rangesOverlap(
+                disabledStart,
+                totalMinutesInDay - 1,
+                0,
+                totalMinutesInDay - 1,
+              )) {
             return false;
           }
         } else {
           // Normal disabled range
           if (_rangesOverlap(
-              0, totalMinutesInDay - 1, disabledStart, disabledEnd)) {
+            0,
+            totalMinutesInDay - 1,
+            disabledStart,
+            disabledEnd,
+          )) {
             return false;
           }
         }
@@ -367,8 +398,12 @@ class _TimePickerState extends State<TimePicker> {
       // Handle circular (midnight-spanning) disabled range
       if (disabledStart > disabledEnd) {
         // Part 1: From disabled start to midnight or 23:59
-        if (_rangesOverlap(startInMinutes, endInMinutes, disabledStart,
-            totalMinutesInDay - 1)) {
+        if (_rangesOverlap(
+          startInMinutes,
+          endInMinutes,
+          disabledStart,
+          totalMinutesInDay - 1,
+        )) {
           return false;
         }
 
@@ -379,8 +414,12 @@ class _TimePickerState extends State<TimePicker> {
 
         // Special Case: If the selected range itself is circular
         if (startInMinutes > endInMinutes) {
-          if (_rangesOverlap(disabledStart, totalMinutesInDay - 1,
-                  startInMinutes, totalMinutesInDay - 1) ||
+          if (_rangesOverlap(
+                disabledStart,
+                totalMinutesInDay - 1,
+                startInMinutes,
+                totalMinutesInDay - 1,
+              ) ||
               _rangesOverlap(0, disabledEnd, 0, endInMinutes)) {
             return false;
           }
@@ -388,14 +427,22 @@ class _TimePickerState extends State<TimePicker> {
       } else {
         // Normal disabled range
         if (_rangesOverlap(
-            startInMinutes, endInMinutes, disabledStart, disabledEnd)) {
+          startInMinutes,
+          endInMinutes,
+          disabledStart,
+          disabledEnd,
+        )) {
           return false;
         }
 
         // Special Case: If the selected range itself is circular
         if (startInMinutes > endInMinutes) {
-          if (_rangesOverlap(disabledStart, disabledEnd, startInMinutes,
-                  totalMinutesInDay - 1) ||
+          if (_rangesOverlap(
+                disabledStart,
+                disabledEnd,
+                startInMinutes,
+                totalMinutesInDay - 1,
+              ) ||
               _rangesOverlap(disabledStart, disabledEnd, 0, endInMinutes)) {
             return false;
           }
@@ -418,10 +465,7 @@ class _TimePickerState extends State<TimePicker> {
 }
 
 class DisabledRange {
-  const DisabledRange({
-    required this.initTime,
-    required this.endTime,
-  });
+  const DisabledRange({required this.initTime, required this.endTime});
 
   final PickedTime initTime;
   final PickedTime endTime;
