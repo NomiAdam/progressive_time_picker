@@ -37,6 +37,8 @@ class TimePicker extends StatefulWidget {
   /// height of the canvas, default at 220
   final double? height;
 
+  final Set<int>? days;
+
   /// width of the canvas, default at 220
   final double? width;
 
@@ -89,6 +91,7 @@ class TimePicker extends StatefulWidget {
     required this.onSelectionEnd,
     required this.onInitialError,
     this.child,
+    this.days,
     this.decoration,
     this.height,
     this.width,
@@ -128,6 +131,7 @@ class _TimePickerState extends State<TimePicker> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.initTime != widget.initTime ||
         oldWidget.endTime != widget.endTime ||
+        oldWidget.days != widget.days ||
         oldWidget.disabledRanges != widget.disabledRanges) {
       _calculatePickerData();
     }
