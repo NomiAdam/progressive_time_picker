@@ -57,8 +57,6 @@ class TimePickerPainter extends StatefulWidget {
   /// used to set priority to draw init or end handler on the top
   final bool drawInitHandlerOnTop;
 
-  final bool? error;
-
   /// Creates a TimePickerPainter.
   TimePickerPainter({
     super.key,
@@ -67,7 +65,6 @@ class TimePickerPainter extends StatefulWidget {
     this.disableTimeStart,
     this.disableTimeEnd,
     this.disabledRangeColor,
-    this.error,
     this.errorColor,
     required this.child,
     required this.primarySectors,
@@ -132,22 +129,16 @@ class TimePickerPainterState extends State<TimePickerPainter> {
     super.initState();
   }
 
-  void repaint() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _calculatePaintData();
-    });
-  }
-
   /// we need to update this widget both with gesture detector but
   /// also when the parent widget rebuilds itself
   @override
   void didUpdateWidget(TimePickerPainter oldWidget) {
-    super.didUpdateWidget(oldWidget);
     if (oldWidget.init != widget.init ||
         oldWidget.end != widget.end ||
-        oldWidget.error != widget.error) {
+        oldWidget.pickerDecoration != widget.pickerDecoration) {
       _calculatePaintData();
     }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
